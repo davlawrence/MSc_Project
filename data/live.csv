@@ -1,0 +1,1 @@
+timestamp,switch,src_ip,dst_ip,packet_count,byte_count,duration_sec,duration_nsec,total_dur,flows,packet_inst,packet_per_flow,byte_per_flow,pktrate,pair_flow,protocol,port_no,tx_bytes,rx_bytes,tx_kbps,rx_kbps,total_kbps
