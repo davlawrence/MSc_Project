@@ -22,7 +22,7 @@ from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
 
-from ryu.lib.packet import in_proto, ipv4, icmp, tcp, udp, ipv6
+from ryu.lib.packet import in_proto, ipv4, icmp, tcp, udp, ipv6, mqtt, mqtt2multicast
 
 class SimpleSwitch13(app_manager.RyuApp):
     # OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
@@ -35,6 +35,16 @@ class SimpleSwitch13(app_manager.RyuApp):
         self.last_timestamp = None
         self.interval = 10  # time interval in seconds
         self.main_port_stats = {}  # dictionary to store port statistics
+
+        # Multicast
+        self.mac_addr = '11:22:33:44:55:66'
+        self.ip_addr  = '192.168.1.100'
+        self.idle_timeout = 3600
+        self.topicToMulticast = {}
+        self.noTopic = {}
+        self.multicastTransmittersForTopic = {}
+        self.multicastReceiversForTopic = {}
+        self.firstMulticastIPAddress = '225.0.0.0'
 
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
@@ -132,7 +142,13 @@ class SimpleSwitch13(app_manager.RyuApp):
                         in_port=in_port
                     )
                 elif protocol == in_proto.IPPROTO_UDP:
-                    # u = pkt.get_protocol(udp.udp)
+                    u = pkt.get_protocol(udp.udp)
+
+                    if u.dst_port == mqtt2multicast.UDP_SERVER_PORT:
+                        self.logger.debug('MQTT Packet sent and recieve ...')
+                    else:
+                        pass
+                        
                     match = parser.OFPMatch(
                         eth_type=ether_types.ETH_TYPE_IP,
                         ipv4_src=srcip,

@@ -8,11 +8,11 @@ def generate_mac_address(digit):
         return "00:00:00:00:00:0{}".format(digit)
     elif digit >= 10 and digit < 100:
         return "00:00:00:00:00:{}".format(digit)
-    elif digit >= 100 and digit <= 250:
+    elif digit >= 100 and digit <= 251:
         stringified_digit = str(digit)
         return "00:00:00:00:0{}:{}{}".format(stringified_digit[0], stringified_digit[1], stringified_digit[2])
     else:
-        raise ValueError("The range of allow number is between 1 and 250")
+        raise ValueError("The range of allow number is between 1 and 251")
     
 
 class ApplicationTopology(Topo):
@@ -61,6 +61,9 @@ class ApplicationTopology(Topo):
         self.switch_intances = list()
         self.host_intances = list()
         self.ip_collections = list()
+        self.iot_cameras = list()
+        self.iot_watches = list()
+
 
         if (isinstance(controller, dict) and "name" in list(controller.keys())):
             self.params["controller"] = controller
@@ -107,23 +110,52 @@ class ApplicationTopology(Topo):
                     host_ip = "10.0.0.{}/24".format((host_index + 1))
                     host_mac = generate_mac_address((host_index + 1))
                     self.ip_collections.append(host_ip)
-                    host_node = self.addHost(host_name, cpu=1/20, mac=host_mac, ip=host_ip)
+                    host_node = self.addHost(host_name, cpu=1/20, mac=host_mac, ip=host_ip, device_type="regular", generic_name="")
                     self.host_intances.append(host_node)
 
                     # Connect host to switch
                     self.addLink(host_node, switch_node)
             else:
                 for j in range(num_of_hosts_per_switch):
-                    host_index = j + base_host_counter
-                    host_name = self.get_host_name(host_index)
-                    host_ip = "10.0.0.{}/24".format((host_index + 1))
-                    host_mac = generate_mac_address((host_index + 1))
-                    self.ip_collections.append(host_ip)
-                    host_node = self.addHost(host_name, cpu=1/20, mac=host_mac, ip=host_ip)
-                    self.host_intances.append(host_node)
+                    if ((i == 1) and (j == 2 or j == 3)) or ((i == 3) and (j == 4)) or ((i == 4) and (j == 1 or j == 3)):
+                        host_index = j + base_host_counter
+
+                        if ((i == 1) and (j == 2 or j == 3)):
+                            device_name, generic_name = self.get_iot_host_name_for_switch_one(j)
+
+                        if ((i == 3) and (j == 4)):
+                            device_name, generic_name = self.get_iot_host_name_for_switch_three(j)
+
+                        if ((i == 4) and (j == 1 or j == 3)):
+                            device_name, generic_name = self.get_iot_host_name_for_switch_four(j)
+
+                        host_ip = "10.0.0.{}/24".format((host_index + 1))
+                        host_mac = generate_mac_address((host_index + 1))
+                        self.ip_collections.append(host_ip)
+                        host_node = self.addHost(device_name, cpu=1/20, mac=host_mac, ip=host_ip, device_type="iot", generic_name=generic_name)
+                        self.host_intances.append(host_node)
+                    else:
+                        host_index = j + base_host_counter
+                        host_name = self.get_host_name(host_index)
+                        host_ip = "10.0.0.{}/24".format((host_index + 1))
+                        host_mac = generate_mac_address((host_index + 1))
+                        self.ip_collections.append(host_ip)
+                        host_node = self.addHost(host_name, cpu=1/20, mac=host_mac, ip=host_ip, device_type="regular", generic_name="")
+                        self.host_intances.append(host_node)
 
                     # Connect host to switch
                     self.addLink(host_node, switch_node)
+
+        host_index = 250
+        host_name = self.get_host_name(host_index)
+        host_ip = "10.0.0.{}/24".format(host_index + 1)
+        host_mac = generate_mac_address(host_index + 1)
+        self.ip_collections.append(host_ip)
+        host_node = self.addHost(host_name, cpu=1/20, mac=host_mac, ip=host_ip, device_type="regular", generic_name="mqtt_server")
+        self.host_intances.append(host_node)
+        
+        # Connect host to switch
+        self.addLink(host_node, self.switch_intances[len(self.switch_intances)-1])
 
         
         if len(self.switch_intances) > 1:
@@ -149,8 +181,6 @@ class ApplicationTopology(Topo):
 
         return True if valid_switch_params and valid_host_params else False
     
-
-
     
     def get_switch_name(self, switch_index):
         names = self.params["switches"]["names"] if len(self.params["switches"]["names"]) > 0 else list()
@@ -162,9 +192,49 @@ class ApplicationTopology(Topo):
             self.params["switches"]["names"].append(name)
         return name
     
+    def get_iot_host_name_for_switch_one(self, device_index):
+        device_name = generic_name = ""
 
+        if device_index == 2:
+            device_name, generic_name = self.create_camera_object()
+        elif device_index == 3:
+            device_name, generic_name = self.create_watch_object()
+
+        return device_name, generic_name
+
+    def get_iot_host_name_for_switch_three(self, device_index):
+        device_name = generic_name = ""
+        
+        device_name, generic_name = self.create_camera_object()
+
+        return device_name, generic_name
+
+    def get_iot_host_name_for_switch_four(self, device_index):
+        device_name = generic_name = ""
+
+        if device_index == 1:
+            device_name, generic_name = self.create_camera_object()
+        elif device_index == 3:
+            device_name, generic_name = self.create_watch_object()
+
+        return device_name, generic_name
+    
+    def create_camera_object(self):
+        camera_count = len(self.iot_cameras)
+        camera_name = "C{}".format(camera_count + 1)
+        self.iot_cameras.append(camera_name)
+        self.params["hosts"]["names"].append(camera_name)
+        return camera_name, "Camera"
+
+    def create_watch_object(self):
+        watch_count = len(self.iot_watches)
+        watch_name = "W{}".format(watch_count + 1)
+        self.iot_watches.append(watch_name)
+        self.params["hosts"]["names"].append(watch_name)
+        return watch_name, "Watch"
 
     
+
     def get_host_name(self, host_index):
         names = self.params["hosts"]["names"] if len(self.params["hosts"]["names"]) > 0 else list()
         name = None

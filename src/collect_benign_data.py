@@ -12,6 +12,7 @@ from ryu.controller.handler import MAIN_DISPATCHER, DEAD_DISPATCHER, CONFIG_DISP
 from ryu.controller.handler import set_ev_cls
 from ryu.lib import hub
 from ryu.lib.packet import ether_types
+from ryu.lib.packet import mqtt2multicast
 
 from lib.switch import SimpleSwitch13
 from lib.helpers import create_directory, write_to_new_file, write_to_existing_file, draw_horizontal_line, clear_file
@@ -118,6 +119,7 @@ class CollectBenignDatasetApp(SimpleSwitch13):
         self.flow_stats = []
         self.port_stats = []
         self.state = 0
+
 
     @set_ev_cls(ofp_event.EventOFPStateChange, [MAIN_DISPATCHER, DEAD_DISPATCHER])
     def _state_change_handler(self, ev):

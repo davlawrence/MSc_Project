@@ -28,27 +28,27 @@ def test_network_topology():
     for host_name in app_topology.params["hosts"]["names"]:
         hosts.append(net.get(host_name))
 
-    target_host_index = len(hosts) -1
+    # target_host_index = len(hosts) -1
 
-    web_server = hosts[target_host_index]
-    web_server_ip = retrieve_ip_address_from_cidr_ip(web_server.params["ip"])
-    web_server_mac = web_server.params["mac"]
-    web_server_name = web_server.name
+    mttq_server = net.get("H251")
+    mttq_server_ip = retrieve_ip_address_from_cidr_ip(mttq_server.params["ip"])
+    mttq_server_mac = mttq_server.params["mac"]
+    mttq_server_name = mttq_server.name
 
-    web_server.cmd("cd /home/mininet/webserver")
-    web_server.cmd("python -m SimpleHTTPServer 80 &")
+    mttq_server.cmd("cd /home/mininet/webserver")
+    mttq_server.cmd("python -m SimpleHTTPServer 80 &")
 
 
     print("""
 
-        Configured Web Server Net Info:
+        Configured MQTT Proxy Server:
         ===============================
         Host Name    :  {}
         MAC Address  :  {}
         IP Address   :  {}
 
         
-    """.format(web_server_ip, web_server_mac, web_server_name))
+    """.format(mttq_server_ip, mttq_server_mac, mttq_server_name))
 
     CLI(net)
     net.stop()
