@@ -54,12 +54,13 @@ def run_benign_traffic():
     scapy_directory_path = os.path.join(base_dir, scapy_dir)
     scripts_directory_path = os.path.join(base_dir, scripts_dir)
 
-    host_251 = net.get("H251")
-    host_251_ip = retrieve_ip_address_from_cidr_ip(host_251.params["ip"])
-    host_251_mac = host_251.params["mac"]
-    host_251_name = host_251.name
-    host_251.cmd("cd {}; ./mqtt_proxy_m2m.sh &".format(scapy_directory_path))
-    host_251.cmd("cd {}; ./mqtt_proxy_as_broker.sh &".format(scapy_directory_path))
+    mttq_server = net.get("H251")
+    mttq_server_ip = retrieve_ip_address_from_cidr_ip(mttq_server.params["ip"])
+    mttq_server_mac = mttq_server.params["mac"]
+    mttq_server_name = mttq_server.name
+    mttq_server.cmd("cd {}; bash ./mqtt_proxy_m2m.sh &".format(scapy_directory_path))
+
+    
 
     for host in hosts:
         host.cmd("cd /home/mininet/Downloads")
@@ -79,12 +80,10 @@ def run_benign_traffic():
             dst_host_name = "{}{}".format(app_topology.default_host_initial, retrieve_host_number_from_cidr_ip(destination_host).split(".")[-1])
 
             if source_host.params["device_type"] == "iot":
-                print("Generating MQTT Subscribe traffic between {} and {}".format(source_host_name, host_251_name))
-                source_host.cmd("{}/start_mqtt_subscriber.sh {} &".format(scripts_directory_path, host_251_ip))
-                print("Generating MQTT Publish traffic between {} and {}".format(source_host_name, host_251_name))
-                source_host.cmd("{}/start_mqtt_publisher.sh {} &".format(scripts_directory_path, host_251_ip))
-                # source_host.cmd("{}/start_mqtt_subscriber.sh {} &".format(scripts_directory_path, host_1_ip))
-                # source_host.cmd("{}/start_mqtt_subscriber.sh {} &".format(scripts_directory_path, host_1_ip))
+                print("Generating MQTT Subscribe traffic between {} and {}".format(source_host_name, mttq_server_name))
+                source_host.cmd("{}/start_mqtt_subscriber.sh {} &".format(scripts_directory_path, mttq_server_ip))
+                print("Generating MQTT Publish traffic between {} and {}".format(source_host_name, mttq_server_name))
+                source_host.cmd("{}/start_mqtt_publisher.sh {} &".format(scripts_directory_path, mttq_server_ip))
                 print("\n\n")
             else:
                 print("Generating ICMP traffic between {} and {}".format(source_host_name, dst_host_name))

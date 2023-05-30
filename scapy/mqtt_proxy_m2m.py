@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-#
-# Jorge Navarro-Ortiz (jorgenavarro@ugr.es), University of Granada, 2021
-#
 
 from scapy.all import *
 from threading import Thread, Lock, Timer
@@ -337,7 +334,7 @@ class MQTTProxy:
 
                             elif i >= 10:
                                 waiting = False
-                                print("[%s] No MQTT2MULTICAST REPLY message received, discarding MQTT PUBLISH message (topic=%s, message=%s)" % (threadName, multicastIPAddress, topic.decode(), message.decode()))
+                                # print("[%s] No MQTT2MULTICAST REPLY message received, discarding MQTT PUBLISH message (topic=%s, message=%s)" % (threadName, multicastIPAddress, topic.decode(), message.decode()))
 
                         # If there is no subscriber, the topic is removed from topicToMulticast
                         if not topic.decode() in subscribersForTopic:

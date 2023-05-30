@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USERNAME="jorge"
+USERNAME="davlawrence"
 PASSWORD="passwd"
 MQTTPORT=1883
 UDPPORT=1883

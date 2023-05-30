@@ -1,4 +1,5 @@
 import sys
+import os
 
 sys.path.append("../lib")
 
@@ -30,13 +31,18 @@ def test_network_topology():
 
     # target_host_index = len(hosts) -1
 
+    scapy_dir = "scapy/"
+    scripts_dir = "scripts"
+    base_dir = os.getcwd()
+    scapy_directory_path = os.path.join(base_dir, scapy_dir)
+    # scripts_directory_path = os.path.join(base_dir, scripts_dir)
+
     mttq_server = net.get("H251")
     mttq_server_ip = retrieve_ip_address_from_cidr_ip(mttq_server.params["ip"])
     mttq_server_mac = mttq_server.params["mac"]
     mttq_server_name = mttq_server.name
 
-    mttq_server.cmd("cd /home/mininet/webserver")
-    mttq_server.cmd("python -m SimpleHTTPServer 80 &")
+    mttq_server.cmd("cd {}; bash ./mqtt_proxy_m2m.sh &".format(scapy_directory_path))
 
 
     print("""

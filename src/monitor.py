@@ -265,12 +265,15 @@ class MonitorNetwork(SimpleSwitch13):
 
 
             if agg_flow_iter_counter == (agg_flow_count-2):
-                ssip, sdfp, sdfb, sfe, rfip = compute_dataset_parameters(packets_file_path, bytes_file_path, srcip_file_path, dstip_file_path, netflow_path)
+                try:
+                    ssip, sdfp, sdfb, sfe, rfip = compute_dataset_parameters(packets_file_path, bytes_file_path, srcip_file_path, dstip_file_path, netflow_path)
 
-                agg_data_record = self.stringify_aggregated_data_record(ssip, sdfp, sdfb, sfe, rfip)
-                write_to_existing_file(self.agg_live_file_path, agg_data_record)
-                pv = "H{}".format(dst_ip.split(".")[-1])
-                self.possible_victims.append(pv)
+                    agg_data_record = self.stringify_aggregated_data_record(ssip, sdfp, sdfb, sfe, rfip)
+                    write_to_existing_file(self.agg_live_file_path, agg_data_record)
+                    pv = "H{}".format(dst_ip.split(".")[-1])
+                    self.possible_victims.append(pv)
+                except:
+                    pass
 
 
         df = pd.DataFrame(list(zip(dst, src, packet_count, byte_count)), columns=["src", "dst", "packet_count", "byte_count"])
