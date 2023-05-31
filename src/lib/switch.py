@@ -41,14 +41,14 @@ class SimpleSwitch13(app_manager.RyuApp):
         self.main_port_stats = {}  # dictionary to store port statistics
 
         # Multicast
-        self.mac_addr = '00:00:00:00:00:01'
-        self.ip_addr  = '10.0.0.1'
+        self.mac_addr = '00:00:00:00:00:02'
+        self.ip_addr  = '10.0.0.2'
         self.idle_timeout = 3600
         self.topicToMulticast = {}
         self.noTopic = {}
         self.multicastTransmittersForTopic = {}
         self.multicastReceiversForTopic = {}
-        self.firstMulticastIPAddress = '225.255.255.0'
+        self.firstMulticastIPAddress = '225.255.255.0'    
 
         self.MULTICAST_ROUTING = False
 
