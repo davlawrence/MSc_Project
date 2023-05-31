@@ -43,8 +43,8 @@ class SimpleSwitch13(app_manager.RyuApp):
         self.main_port_stats = {}  # dictionary to store port statistics
 
         # Multicast
-        self.mac_addr = '00:00:00:00:02:51'
-        self.ip_addr  = '10.0.0.251'
+        self.mac_addr = '00:00:00:00:00:01'
+        self.ip_addr  = '10.0.0.1'
         self.idle_timeout = 3600
         self.topicToMulticast = {}
         self.noTopic = {}

@@ -29,7 +29,7 @@ def run_ddos_attack_traffic():
 
     base_host_index = 0
 
-    host_1 = hosts[base_host_index]
+    host_1 = host_1 = net.get("H1")
     host_1_ip = retrieve_ip_address_from_cidr_ip(host_1.params["ip"])
     host_1_mac = host_1.params["mac"]
     host_1_name = host_1.name

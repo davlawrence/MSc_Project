@@ -1,3 +1,1 @@
 timestamp,switch,src_ip,dst_ip,packet_count,byte_count,duration_sec,duration_nsec,total_dur,flows,packet_inst,packet_per_flow,byte_per_flow,pktrate,pair_flow,protocol,port_no,tx_bytes,rx_bytes,tx_kbps,rx_kbps,total_kbps
-1685478374,6,10.0.0.8,10.0.0.251,352,24776,65,54000000,6554000000,2,0,1.5852272727272727,1.4656118824669035,0.0,2,6,7,24976,11720,2,0,2
-1685478374,7,10.0.0.251,10.0.0.8,206,11536,64,936000000,64936000000,2,0,2.70873786407767,3.147711511789182,0.0,2,6,6,11720,24976,0,2,2

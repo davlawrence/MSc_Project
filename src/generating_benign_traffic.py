@@ -34,7 +34,7 @@ def run_benign_traffic():
 
     base_host_index = 0
 
-    host_1 = hosts[base_host_index]
+    host_1 = net.get("H1")
     host_1_ip = retrieve_ip_address_from_cidr_ip(host_1.params["ip"])
     host_1_mac = host_1.params["mac"]
     host_1_name = host_1.name
@@ -54,7 +54,7 @@ def run_benign_traffic():
     scapy_directory_path = os.path.join(base_dir, scapy_dir)
     scripts_directory_path = os.path.join(base_dir, scripts_dir)
 
-    mttq_server = net.get("H251")
+    mttq_server = net.get("H2")
     mttq_server_ip = retrieve_ip_address_from_cidr_ip(mttq_server.params["ip"])
     mttq_server_mac = mttq_server.params["mac"]
     mttq_server_name = mttq_server.name

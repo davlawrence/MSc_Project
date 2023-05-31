@@ -37,7 +37,7 @@ def test_network_topology():
     scapy_directory_path = os.path.join(base_dir, scapy_dir)
     # scripts_directory_path = os.path.join(base_dir, scripts_dir)
 
-    mttq_server = net.get("H251")
+    mttq_server = net.get("H1")
     mttq_server_ip = retrieve_ip_address_from_cidr_ip(mttq_server.params["ip"])
     mttq_server_mac = mttq_server.params["mac"]
     mttq_server_name = mttq_server.name

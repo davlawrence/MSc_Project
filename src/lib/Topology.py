@@ -146,13 +146,6 @@ class ApplicationTopology(Topo):
                     # Connect host to switch
                     self.addLink(host_node, switch_node)
 
-        host_index = 250
-        host_name = self.get_host_name(host_index)
-        host_ip = "10.0.0.{}/24".format(host_index + 1)
-        host_mac = generate_mac_address(host_index + 1)
-        self.ip_collections.append(host_ip)
-        host_node = self.addHost(host_name, cpu=1/20, mac=host_mac, ip=host_ip, device_type="regular", generic_name="mqtt_server")
-        self.host_intances.append(host_node)
         
         # Connect host to switch
         self.addLink(host_node, self.switch_intances[len(self.switch_intances)-1])
